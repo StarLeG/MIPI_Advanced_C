@@ -19,8 +19,14 @@ int main() {
     }
     
     int count = 0;
+    unsigned long long power = 1;
     
-    while (weight > 0) {
+    while (weight > 0) {        
+        if (power > 1000000) {
+            printf("-1\n");
+            return 0;
+        }
+        
         unsigned int remainder = weight % 3;
         
         if (remainder == 2) {
@@ -32,6 +38,8 @@ int main() {
         } else {
             weight = weight / 3;
         }
+        
+        power *= 3;
     }
     
     printf("%d\n", count);
