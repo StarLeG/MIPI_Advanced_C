@@ -9,10 +9,14 @@
 
 #include <stdio.h>
 
-
 int main() {
     unsigned int weight;
     scanf("%u", &weight);
+        
+    if (weight > 1000000) {
+        printf("-1\n");
+        return 0;
+    }
     
     int count = 0;
     
@@ -23,11 +27,9 @@ int main() {
             count++;
             weight = weight / 3 + 1;
         } else if (remainder == 1) {
-           
             count++;
             weight = weight / 3;
         } else {
-           
             weight = weight / 3;
         }
     }
