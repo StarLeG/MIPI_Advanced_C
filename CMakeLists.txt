@@ -19,17 +19,8 @@ add_subdirectory(apps/Test_A/A09)
 add_subdirectory(apps/Test_A/A10)
 
 #Test B applications
-#add_subdirectory(apps/Test_B/B00)
-#add_subdirectory(apps/Test_B/B01)
-#add_subdirectory(apps/Test_B/B02)
-#add_subdirectory(apps/Test_B/B03)
-#add_subdirectory(apps/Test_B/B04)
-#add_subdirectory(apps/Test_B/B05)
-#add_subdirectory(apps/Test_B/B06)
-#add_subdirectory(apps/Test_B/B07)
-#add_subdirectory(apps/Test_B/B08)
-#add_subdirectory(apps/Test_B/B09)
-#add_subdirectory(apps/Test_B/B10)           
+add_subdirectory(apps/Test_B/B00)
+#add_subdirectory(apps/Test_B/B01)       
 
 #Snake game application
 add_subdirectory(apps/snake)
