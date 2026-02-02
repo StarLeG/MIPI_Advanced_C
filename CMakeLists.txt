@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28.3)
+cmake_minimum_required(VERSION 3.22)
 
 project(MIPI_Advanced_C VERSION 1.0.0 LANGUAGES C)
 
@@ -19,8 +19,8 @@ add_subdirectory(apps/Test_A/A09)
 add_subdirectory(apps/Test_A/A10)
 
 #Test B applications
-add_subdirectory(apps/Test_B/B00)
-#add_subdirectory(apps/Test_B/B01)       
+#add_subdirectory(apps/Test_B/B00)
+add_subdirectory(apps/Test_B/B01)       
 
 #Snake game application
 add_subdirectory(apps/snake)
