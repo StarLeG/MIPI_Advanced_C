@@ -14,7 +14,7 @@
 #build/apps/Test_A/A09/test_A09
 #build/apps/Test_A/A10/test_A10
 
-build/apps/Test_B/B00/test_B00
-#build/apps/Test_B/B01/test_B01
+#build/apps/Test_B/B00/test_B00
+build/apps/Test_B/B01/test_B01
 
 #build/apps/snake/snake
