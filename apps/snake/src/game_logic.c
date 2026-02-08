@@ -37,6 +37,30 @@ void initSnake(snake_t *head, size_t size, int x, int y, int color_pair) {
     head->tail = tail;
     head->tsize = size+1; // initial tail
     head->color_pair = color_pair;
+    
+    // Initialize initial tail positions to be behind the head
+    int tail_x = x;
+    int tail_y = y;
+    
+    for (size_t i = 0; i < size; i++) {
+        // Place tail segments behind the head according to initial direction
+        switch(head->direction) {
+            case RIGHT:
+                tail_x = x - i - 1;
+                break;
+            case LEFT:
+                tail_x = x + i + 1;
+                break;
+            case UP:
+                tail_y = y + i + 1;
+                break;
+            case DOWN:
+                tail_y = y - i - 1;
+                break;
+        }
+        head->tail[i].x = tail_x;
+        head->tail[i].y = tail_y;
+    }
 }
 
 // Initialize all snakes
@@ -49,10 +73,35 @@ void initAllSnakes(snake_t snakes[], size_t num_snakes, size_t start_size) {
     }
 }
 
-// Generate food at random position
-void spawnFood(food_t *food, int max_x, int max_y) {
-    food->x = rand() % max_x;
-    food->y = (rand() % (max_y - MIN_Y)) + MIN_Y;
+// Check if position is occupied by any snake
+int isPositionOccupied(snake_t snakes[], size_t num_snakes, int x, int y) {
+    for (size_t i = 0; i < num_snakes; i++) {
+        if (!snakes[i].is_alive) continue;
+        // Check head
+        if (snakes[i].x == x && snakes[i].y == y) {
+            return 1;
+        }
+        // Check tail
+        for (size_t j = 0; j < snakes[i].tsize; j++) {
+            if (snakes[i].tail[j].x == x && snakes[i].tail[j].y == y) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+// Generate food at random position not occupied by snakes
+void spawnFood(food_t *food, snake_t snakes[], size_t num_snakes, int max_x, int max_y) {
+    int attempts = 0;
+    int max_attempts = 100; // Prevent infinite loop
+    
+    do {
+        food->x = rand() % max_x;
+        food->y = (rand() % (max_y - MIN_Y)) + MIN_Y;
+        attempts++;
+    } while (isPositionOccupied(snakes, num_snakes, food->x, food->y) && attempts < max_attempts);
+    
     food->symbol = '#'; // food symbol
 }
 
@@ -92,10 +141,12 @@ void go(snake_t *head) {
     }
 }
 
-// Change direction for all snakes
+// Change direction for all snakes with opposite direction check
 void changeAllDirections(snake_t snakes[], size_t num_snakes, const int32_t key) {
     for (size_t i = 0; i < num_snakes; i++) {
         if (!snakes[i].is_alive) continue; // Skip dead snakes
+
+        int new_direction = snakes[i].direction; // Default to current direction
 
         // For second snake (WASD) handle both English and Russian layouts
         if (i == 1) {
@@ -105,37 +156,50 @@ void changeAllDirections(snake_t snakes[], size_t num_snakes, const int32_t key)
                 case 'w': case 'W':
                 // Russian layout
                 case 1094: case 1062: // Ц ц in Russian layout
-                    snakes[i].direction = UP;
+                    new_direction = UP;
                     break;
 
                 case 's': case 'S':
                 // Russian layout
                 case 1099: case 1067: // Ы ы in Russian layout
-                    snakes[i].direction = DOWN;
+                    new_direction = DOWN;
                     break;
 
                 case 'a': case 'A':
                 // Russian layout
                 case 1092: case 1060: // Ф ф in Russian layout
-                    snakes[i].direction = LEFT;
+                    new_direction = LEFT;
                     break;
 
                 case 'd': case 'D':
                 // Russian layout
                 case 1074: case 1042: // В в in Russian layout
-                    snakes[i].direction = RIGHT;
+                    new_direction = RIGHT;
                     break;
             }
         } else {
             // For first snake use arrows (layout independent)
             if (key == snakes[i].controls.down)
-                snakes[i].direction = DOWN;
+                new_direction = DOWN;
             else if (key == snakes[i].controls.up)
-                snakes[i].direction = UP;
+                new_direction = UP;
             else if (key == snakes[i].controls.right)
-                snakes[i].direction = RIGHT;
+                new_direction = RIGHT;
             else if (key == snakes[i].controls.left)
-                snakes[i].direction = LEFT;
+                new_direction = LEFT;
+        }
+
+        // Prevent moving in opposite direction
+        if ((snakes[i].direction == LEFT && new_direction == RIGHT) ||
+            (snakes[i].direction == RIGHT && new_direction == LEFT) ||
+            (snakes[i].direction == UP && new_direction == DOWN) ||
+            (snakes[i].direction == DOWN && new_direction == UP)) {
+            continue; // Ignore opposite direction input
+        }
+
+        // Only update direction if it changed
+        if (new_direction != snakes[i].direction) {
+            snakes[i].direction = new_direction;
         }
     }
 }
@@ -168,10 +232,19 @@ int checkAllFood(snake_t snakes[], size_t num_snakes, food_t *food) {
     return 0;
 }
 
-// Check head collision with own tail
+// Check head collision with own tail (ENABLED)
 int isCrush(snake_t *snake) {
-    // Always return 0 to disable death from self-intersection
-    return 0;
+    // Don't check self-collision if snake is too short
+    if (snake->tsize < 4) return 0;
+    
+    // Skip checking first few tail segments to prevent immediate death on start
+    for (size_t i = 4; i < snake->tsize; i++) {
+        // Check if head collides with any tail segment
+        if (snake->x == snake->tail[i].x && snake->y == snake->tail[i].y) {
+            return 1; // Collision with own tail
+        }
+    }
+    return 0; // No collision
 }
 
 // Check screen boundary exit
@@ -241,12 +314,15 @@ int checkAllCollisions(snake_t snakes[], size_t num_snakes, int max_x, int max_y
             snakes[i].is_alive = 0;
             playSound(3); // Wall collision sound
             mvprintw(2, 0, "Snake %zd crashed into wall!              ", i + 1);
+            continue; // Skip other checks if snake is dead
         }
 
-        // Check self-intersection (DISABLED - isCrush always returns 0)
+        // Check self-intersection (ENABLED)
         if (isCrush(&snakes[i])) {
-            // This code never executes as isCrush always returns 0
             snakes[i].is_alive = 0;
+            playSound(3); // Self-collision sound
+            mvprintw(2, 0, "Snake %zd crashed into itself!            ", i + 1);
+            continue; // Skip other checks if snake is dead
         }
     }
 
