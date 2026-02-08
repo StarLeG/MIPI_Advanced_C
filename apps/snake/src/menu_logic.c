@@ -210,43 +210,61 @@ void playGame() {
         if (checkAllCollisions(snakes, NUM_SNAKES, max_x, max_y)) {
             game_over = 1;
             playSound(3); // Game over sound
+            
+            // Immediately show game over screen and wait for key press
+            clear();
+            
+            // Determine winner
+            int winner = -1;
+            int max_score = -1;
+            int alive_count = 0;
+
+            for (size_t i = 0; i < NUM_SNAKES; i++) {
+                if (snakes[i].is_alive) {
+                    alive_count++;
+                    winner = i;
+                }
+                if (snakes[i].score > max_score) {
+                    max_score = snakes[i].score;
+                    winner = i;
+                }
+            }
+
+            if (alive_count > 0) {
+                // There is at least one alive snake
+                mvprintw(max_y/2, (max_x-20)/2, "Snake %d wins!", winner + 1);
+                mvprintw(max_y/2 + 1, (max_x-20)/2, "Score: %d points", snakes[winner].score);
+            } else {
+                // All snakes are dead
+                mvprintw(max_y/2, (max_x-30)/2, "Game Over! All snakes died!");
+                if (snakes[0].score == snakes[1].score) {
+                    mvprintw(max_y/2 + 1, (max_x-9)/2, "Draw!");
+                } else {
+                    mvprintw(max_y/2 + 1, (max_x-20)/2, "Winner: Snake %d", winner + 1);
+                }
+            }
+
+            mvprintw(max_y/2 + 2, (max_x-40)/2, "Press any key to return to menu...");
+            refresh();
+            
+            // Wait for any key press
+            timeout(-1); // Blocking wait
+            getch();
+            timeout(100); // Restore timeout
+            
+            break; // Exit game loop immediately
         }
 
         refresh();
         usleep(100000); // 100ms delay
     }
 
-    // ===================== GAME OVER ==========================
-    if (game_over) {
-        clear();
-        // Determine winner
-        int winner = -1;
-        int max_score = -1;
-
-        for (size_t i = 0; i < NUM_SNAKES; i++) {
-            if (snakes[i].is_alive) {
-                winner = i;
-            }
-            if (snakes[i].score > max_score) {
-                max_score = snakes[i].score;
-                winner = i;
-            }
-        }
-
-        if (winner != -1) {
-            mvprintw(max_y/2, (max_x-20)/2, "Snake %d wins!", winner + 1);
-            mvprintw(max_y/2 + 1, (max_x-20)/2, "Score: %d points", snakes[winner].score);
-        } else {
-            mvprintw(max_y/2, (max_x-9)/2, "Draw!");
-        }
-
-        mvprintw(max_y/2 + 2, (max_x-40)/2, "Press any key to return to menu...");
-        refresh();
-        getch(); // Wait for any key press
-    }
-
     // ==================== GAME CLEANUP ========================
     for (size_t i = 0; i < NUM_SNAKES; i++) {
         free(snakes[i].tail);
     }
+    
+    // Clear screen before returning to menu
+    clear();
+    refresh();
 }
