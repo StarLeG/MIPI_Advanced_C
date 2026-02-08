@@ -118,25 +118,22 @@ int checkFood(snake_t *snake, food_t *food) {
 
 // Move snake head and draw
 void go(snake_t *head) {
-    int max_x = 0, max_y = 0;
-    getmaxyx(stdscr, max_y, max_x); // terminal sizes
-
     // Erase previous head position
     mvprintw(head->y, head->x, " ");
 
-    // Move head depending on direction
+    // Move head depending on direction (без телепортации)
     switch(head->direction){
         case LEFT:
-            head->x = (head->x <= 0) ? max_x - 1 : head->x - 1;
+            head->x = head->x - 1;
             break;
         case RIGHT:
-            head->x = (head->x >= max_x - 1) ? 0 : head->x + 1;
+            head->x = head->x + 1;
             break;
         case UP:
-            head->y = (head->y <= MIN_Y) ? max_y - 1 : head->y - 1;
+            head->y = head->y - 1;
             break;
         case DOWN:
-            head->y = (head->y >= max_y - 1) ? MIN_Y : head->y + 1;
+            head->y = head->y + 1;
             break;
     }
 }
