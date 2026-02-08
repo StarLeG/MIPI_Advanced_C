@@ -85,7 +85,7 @@ int startMenu() {
 
         // Menu control instructions
         mvprintw(26, 5, "Menu controls:");
-        mvprintw(27, 8, "Arrow keys ↑↓ - navigation, ENTER - select, TAB - switch snakes");
+        mvprintw(27, 8, "Arrow keys UP/DOWN - navigation, ENTER - select, TAB - switch snakes");
         mvprintw(28, 8, "M - toggle sound");
 
         refresh();

@@ -45,34 +45,34 @@ void showWelcomeScreen() {
 
     // Main menu functions
     mvprintw(7, 5, "MAIN MENU FUNCTIONS:");
-    mvprintw(8, 8, "• Color selection for each snake");
-    mvprintw(9, 8, "• Control configuration");
-    mvprintw(10, 8, "• Start game with selected settings");
-    mvprintw(11, 8, "• Restart menu");
-    mvprintw(12, 8, "• Sound on/off");
-    mvprintw(13, 8, "• Exit game");
+    mvprintw(8, 8, "* Color selection for each snake");
+    mvprintw(9, 8, "* Control configuration");
+    mvprintw(10, 8, "* Start game with selected settings");
+    mvprintw(11, 8, "* Restart menu");
+    mvprintw(12, 8, "* Sound on/off");
+    mvprintw(13, 8, "* Exit game");
 
     // In-game controls
     mvprintw(15, 5, "IN-GAME CONTROLS:");
-    mvprintw(16, 8, "Snake 1: Arrows ← ↑ → ↓");
-    mvprintw(17, 8, "Snake 2: WASD (any layout)");
+    mvprintw(16, 8, "Snake 1: Arrow keys (left, up, right, down)");
+    mvprintw(17, 8, "Snake 2: WASD keys (any layout)");
     mvprintw(18, 8, "Exit: F10");
 
     // Game features
     mvprintw(20, 5, "GAME FEATURES:");
-    mvprintw(21, 8, "• Two independent snakes");
-    mvprintw(22, 8, "• Death from self-intersection");
-    mvprintw(23, 8, "• Teleportation through boundaries");
-    mvprintw(24, 8, "• Cannot reverse direction");
-    mvprintw(25, 8, "• Colorful graphics");
-    mvprintw(26, 8, "• Sound effects");
-    mvprintw(27, 8, "• You can eat another snake if you catch it!");
-    mvprintw(28, 8, "• +50 points for eating snake, +20 for tail");
+    mvprintw(21, 8, "* Two independent snakes");
+    mvprintw(22, 8, "* Death from self-intersection");
+    mvprintw(23, 8, "* Teleportation through boundaries");
+    mvprintw(24, 8, "* Cannot reverse direction");
+    mvprintw(25, 8, "* Colorful graphics");
+    mvprintw(26, 8, "* Sound effects");
+    mvprintw(27, 8, "* You can eat another snake if you catch it!");
+    mvprintw(28, 8, "* +50 points for eating snake, +20 for tail");
 
     // Menu controls
     mvprintw(30, 5, "MENU CONTROLS:");
-    mvprintw(31, 8, "Arrow keys ↑↓ - Navigate options");
-    mvprintw(32, 8, "Arrow keys ←→ - Select color");
+    mvprintw(31, 8, "Arrow keys UP/DOWN - Navigate options");
+    mvprintw(32, 8, "Arrow keys LEFT/RIGHT - Select color");
     mvprintw(33, 8, "TAB - Switch between snakes");
     mvprintw(34, 8, "ENTER - Select option");
     mvprintw(35, 8, "M - Toggle sound");
