@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.22)
 
 # Создание исполняемого файла
-add_executable(snake
-    src/main.c
+add_executable(snake    src/main.c
+                        src/game_logic.c
+                        src/menu_logic.c
+                        src/graphics.c
+                        src/sound.c
 )
 
 # Подключение заголовочных файлов
