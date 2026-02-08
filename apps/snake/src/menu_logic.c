@@ -161,7 +161,7 @@ void playGame() {
 
     // Create first food
     food_t food;
-    spawnFood(&food, max_x, max_y);
+    spawnFood(&food, snakes, NUM_SNAKES, max_x, max_y);
 
     int key_pressed = 0;
     int game_over = 0;
@@ -204,9 +204,9 @@ void playGame() {
 
         // Check eaten food
         if (checkAllFood(snakes, NUM_SNAKES, &food))
-            spawnFood(&food, max_x, max_y);
+            spawnFood(&food, snakes, NUM_SNAKES, max_x, max_y);
 
-        // Check collisions (self-intersection disabled via isCrush())
+        // Check collisions (self-intersection enabled)
         if (checkAllCollisions(snakes, NUM_SNAKES, max_x, max_y)) {
             game_over = 1;
             playSound(3); // Game over sound
@@ -245,7 +245,7 @@ void playGame() {
         getch(); // Wait for any key press
     }
 
-    // ==================== GAME CLEANUP =======================
+    // ==================== GAME CLEANUP ========================
     for (size_t i = 0; i < NUM_SNAKES; i++) {
         free(snakes[i].tail);
     }

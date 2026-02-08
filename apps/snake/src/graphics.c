@@ -61,30 +61,31 @@ void showWelcomeScreen() {
     // Game features
     mvprintw(20, 5, "GAME FEATURES:");
     mvprintw(21, 8, "• Two independent snakes");
-    mvprintw(22, 8, "• No death from self-intersection");
+    mvprintw(22, 8, "• Death from self-intersection");
     mvprintw(23, 8, "• Teleportation through boundaries");
-    mvprintw(24, 8, "• Colorful graphics");
-    mvprintw(25, 8, "• Sound effects");
-    mvprintw(26, 8, "• You can eat another snake if you catch it!");
-    mvprintw(27, 8, "• +50 points for eating snake, +20 for tail");
+    mvprintw(24, 8, "• Cannot reverse direction");
+    mvprintw(25, 8, "• Colorful graphics");
+    mvprintw(26, 8, "• Sound effects");
+    mvprintw(27, 8, "• You can eat another snake if you catch it!");
+    mvprintw(28, 8, "• +50 points for eating snake, +20 for tail");
 
     // Menu controls
-    mvprintw(29, 5, "MENU CONTROLS:");
-    mvprintw(30, 8, "Arrow keys ↑↓ - Navigate options");
-    mvprintw(31, 8, "Arrow keys ←→ - Select color");
-    mvprintw(32, 8, "TAB - Switch between snakes");
-    mvprintw(33, 8, "ENTER - Select option");
-    mvprintw(34, 8, "M - Toggle sound");
-    mvprintw(35, 8, "Q or F10 - Exit");
+    mvprintw(30, 5, "MENU CONTROLS:");
+    mvprintw(31, 8, "Arrow keys ↑↓ - Navigate options");
+    mvprintw(32, 8, "Arrow keys ←→ - Select color");
+    mvprintw(33, 8, "TAB - Switch between snakes");
+    mvprintw(34, 8, "ENTER - Select option");
+    mvprintw(35, 8, "M - Toggle sound");
+    mvprintw(36, 8, "Q or F10 - Exit");
 
     // Development info
-    mvprintw(37, 5, "DEVELOPMENT:");
-    mvprintw(38, 8, "Game created as educational project");
-    mvprintw(39, 8, "using ncurses library");
+    mvprintw(38, 5, "DEVELOPMENT:");
+    mvprintw(39, 8, "Game created as educational project");
+    mvprintw(40, 8, "using ncurses library");
 
     // Continue prompt
     attron(A_BOLD);
-    mvprintw(41, 15, "Press any key to continue...");
+    mvprintw(42, 15, "Press any key to continue...");
     attroff(A_BOLD);
 
     refresh();

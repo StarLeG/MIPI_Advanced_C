@@ -10,7 +10,7 @@ void initSnake(snake_t *head, size_t size, int x, int y, int color_pair);
 void initAllSnakes(snake_t snakes[], size_t num_snakes, size_t start_size);
 
 // Food functions
-void spawnFood(food_t *food, int max_x, int max_y);
+void spawnFood(food_t *food, snake_t snakes[], size_t num_snakes, int max_x, int max_y);
 int checkFood(snake_t *snake, food_t *food);
 int checkAllFood(snake_t snakes[], size_t num_snakes, food_t *food);
 
