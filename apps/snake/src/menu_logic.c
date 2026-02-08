@@ -6,6 +6,7 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 
 // Function to display start menu
 int startMenu() {
@@ -149,7 +150,6 @@ int startMenu() {
     }
 }
 
-// Main game function
 void playGame() {
     // Initialize two snakes
     snake_t snakes[NUM_SNAKES];
@@ -165,7 +165,9 @@ void playGame() {
 
     int key_pressed = 0;
     int game_over = 0;
-    timeout(100);
+    
+    // Используем timeout вместо nodelay для лучшего контроля
+    timeout(0); // Неблокирующий ввод (0 мс ожидания)
 
     // Start background music (simulation)
     if (sound_enabled) {
@@ -174,8 +176,11 @@ void playGame() {
 
     // ==================== MAIN GAME LOOP ======================
     while (key_pressed != STOP_GAME && !game_over && game_running) {
-        key_pressed = getch();          // read pressed key
-
+        clock_t start_time = clock(); // Засекаем время начала цикла
+        
+        // Проверка ввода (неблокирующая)
+        key_pressed = getch();
+        
         // Check sound toggle during game
         if (key_pressed == 'm' || key_pressed == 'M') {
             sound_enabled = !sound_enabled;
@@ -247,22 +252,38 @@ void playGame() {
             mvprintw(max_y/2 + 2, (max_x-40)/2, "Press any key to return to menu...");
             refresh();
             
-            // Wait for any key press
-            timeout(-1); // Blocking wait
+            // Wait for any key press (blocking)
+            timeout(-1); // Блокирующий ввод
             getch();
-            timeout(100); // Restore timeout
+            timeout(0); // Возвращаемся к неблокирующему вводу
             
             break; // Exit game loop immediately
         }
 
         refresh();
-        usleep(100000); // 100ms delay
+        
+        // Рассчитываем время, затраченное на обработку одного кадра
+        clock_t end_time = clock();
+        double frame_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+        
+        // Если кадр обработан слишком быстро, добавляем задержку
+        // Цель: 10 кадров в секунду (100 мс на кадр)
+        double target_frame_time = 0.1; // 100 мс
+        if (frame_time < target_frame_time) {
+            double sleep_time = (target_frame_time - frame_time) * 1000000; // в микросекундах
+            if (sleep_time > 0) {
+                usleep((useconds_t)sleep_time);
+            }
+        }
     }
 
     // ==================== GAME CLEANUP ========================
     for (size_t i = 0; i < NUM_SNAKES; i++) {
         free(snakes[i].tail);
     }
+    
+    // Восстанавливаем стандартный режим ввода
+    timeout(-1);
     
     // Clear screen before returning to menu
     clear();
