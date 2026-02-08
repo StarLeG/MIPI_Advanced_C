@@ -1,8 +1,13 @@
-#include "main.h"
+#include "game_types.h"
+#include "menu_logic.h"
+#include "graphics.h"
+#include <ncurses.h>
+#include <stdlib.h>
+#include <time.h>
 
 int main()
 {
-   srand(time(NULL)); // random number generator
+    srand(time(NULL)); // random number generator
 
     // Initialize curses
     initscr();
