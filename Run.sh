@@ -17,8 +17,8 @@
 #build/apps/Test_B/B00/test_B00
 #build/apps/Test_B/B01/test_B01
 
-build/apps/Test_C/C00/test_C00
-#build/apps/Test_C/C01/test_C01
+#build/apps/Test_C/C00/test_C00
+build/apps/Test_C/C01/test_C01
 #build/apps/Test_C/C02/test_C02
 
 #build/apps/snake/snake
