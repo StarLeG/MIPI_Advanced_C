@@ -19,8 +19,13 @@ add_subdirectory(apps/Test_A/A09)
 add_subdirectory(apps/Test_A/A10)
 
 #Test B applications
-#add_subdirectory(apps/Test_B/B00)
-add_subdirectory(apps/Test_B/B01)       
+add_subdirectory(apps/Test_B/B00)
+add_subdirectory(apps/Test_B/B01) 
+
+#Test B applications
+add_subdirectory(apps/Test_C/C00)
+add_subdirectory(apps/Test_C/C01)
+add_subdirectory(apps/Test_C/C02)
 
 #Snake game application
 add_subdirectory(apps/snake)
