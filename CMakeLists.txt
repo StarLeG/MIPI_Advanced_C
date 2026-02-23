@@ -29,3 +29,6 @@ add_subdirectory(apps/Test_C/C02)
 
 #Snake game application
 add_subdirectory(apps/snake)
+
+#FinalWork application
+add_subdirectory(apps/FinalWork)
