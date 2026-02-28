@@ -1,3 +1,11 @@
+/**
+ * @file main.c
+ * @brief Основная программа вычисления площади
+ * 
+ * Обрабатывает аргументы командной строки, находит точки пересечения
+ * и вычисляет площадь фигуры, ограниченной тремя кривыми
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,17 +15,43 @@
 #include "integral.h"
 #include "plotting.h"
 
+/**
+ * @brief Структура для хранения информации о точке пересечения
+ */
 typedef struct {
-    double x;
-    int f_i;
-    int f_j;
-    int iterations;
+    double x;           /**< Абсцисса точки пересечения */
+    int f_i;            /**< Индекс первой функции */
+    int f_j;            /**< Индекс второй функции */
+    int iterations;     /**< Количество итераций при поиске */
 } Intersection;
 
+/**
+ * @brief Вывод справки по использованию программы
+ */
 void print_help(void);
+
+/**
+ * @brief Поиск и вывод точек пересечения функций
+ * @param print_abscissas Флаг вывода абсцисс
+ * @param print_iterations Флаг вывода количества итераций
+ */
 void find_intersections(int print_abscissas, int print_iterations);
+
+/**
+ * @brief Вычисление площади фигуры
+ * @param eps1 Точность для поиска корней
+ * @param eps2 Точность для интегрирования
+ * @param print_iterations Флаг вывода количества итераций
+ * @return Вычисленная площадь
+ */
 double calculate_area(double eps1, double eps2, int print_iterations);
 
+/**
+ * @brief Точка входа в программу
+ * @param argc Количество аргументов командной строки
+ * @param argv Массив аргументов командной строки
+ * @return 0 при успешном выполнении, иначе код ошибки
+ */
 int main(int argc, char* argv[]) {
     int print_abscissas = 0;
     int print_iterations = 0;
@@ -26,6 +60,7 @@ int main(int argc, char* argv[]) {
     double eps1 = 1e-6;
     double eps2 = 1e-4;
     
+    // Обработка аргументов командной строки
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
             print_help();
@@ -78,6 +113,9 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
+/**
+ * @brief Вывод справки по использованию программы
+ */
 void print_help(void) {
     printf("Использование: area_calc [ОПЦИИ]\n\n");
     printf("Опции:\n");
@@ -95,10 +133,16 @@ void print_help(void) {
     printf("  f3(x) = 3/x\n");
 }
 
+/**
+ * @brief Поиск и вывод точек пересечения функций
+ * @param print_abscissas Флаг вывода абсцисс
+ * @param print_iterations Флаг вывода количества итераций
+ */
 void find_intersections(int print_abscissas, int print_iterations) {
     printf("Поиск точек пересечения:\n");
     printf("-------------------------\n");
     
+    // Пары функций для поиска пересечений
     struct {
         int f1, f2;
         double a, b;
@@ -139,7 +183,7 @@ void find_intersections(int print_abscissas, int print_iterations) {
         }
     }
     
-    // Сортировка точек пересечения
+    // Сортировка точек пересечения по возрастанию x
     for (int i = 0; i < num_intersections - 1; i++) {
         for (int j = i + 1; j < num_intersections; j++) {
             if (intersections[i].x > intersections[j].x) {
@@ -155,6 +199,13 @@ void find_intersections(int print_abscissas, int print_iterations) {
     }
 }
 
+/**
+ * @brief Вычисление площади фигуры
+ * @param eps1 Точность для поиска корней
+ * @param eps2 Точность для интегрирования
+ * @param print_iterations Флаг вывода количества итераций
+ * @return Вычисленная площадь
+ */
 double calculate_area(double eps1, double eps2, int print_iterations) {    
     printf("\nВычисление площади...\n");
     printf("---------------------\n");
@@ -172,11 +223,11 @@ double calculate_area(double eps1, double eps2, int print_iterations) {
     }
     
     // Используем найденные корни или значения по умолчанию, если поиск не удался
-    double x1 = r13.success ? r13.root : 0.854109;  // Используем известное приближение
-    double x2 = r23.success ? r23.root : 3.243927;  // Используем известное приближение
-    double x3 = r12_right.success ? r12_right.root : 3.847753;  // Используем известное приближение
+    double x1 = r13.success ? r13.root : 0.854109;
+    double x2 = r23.success ? r23.root : 3.243927;
+    double x3 = r12_right.success ? r12_right.root : 3.847753;
     
-    // Сортируем точки (хотя они уже должны быть в порядке возрастания)
+    // Сортируем точки
     double points[3] = {x1, x2, x3};
     for (int i = 0; i < 2; i++) {
         for (int j = i + 1; j < 3; j++) {
@@ -191,19 +242,16 @@ double calculate_area(double eps1, double eps2, int print_iterations) {
     printf("Точки пересечения: x1 = %f, x2 = %f, x3 = %f\n", 
            points[0], points[1], points[2]);
     
-    // Вычисление площади
-    double area = 0;
-    
-    // На [x1, x2] интегрируем разность f1 и f2 (f1 выше f2)
+    // Вычисление площади как суммы интегралов разностей функций
+    // На [x1, x2]: f1 выше f2
+    // На [x2, x3]: f2 выше f3
     IntegralResult int_f1_1 = integral(f1, points[0], points[1], eps2);
     IntegralResult int_f2_1 = integral(f2, points[0], points[1], eps2);
-    
-    // На [x2, x3] интегрируем разность f2 и f3 (f2 выше f3)
     IntegralResult int_f2_2 = integral(f2, points[1], points[2], eps2);
     IntegralResult int_f3_2 = integral(f3, points[1], points[2], eps2);
     
-    area = (int_f1_1.result - int_f2_1.result) + 
-           (int_f2_2.result - int_f3_2.result);
+    double area = (int_f1_1.result - int_f2_1.result) + 
+                  (int_f2_2.result - int_f3_2.result);
     
     if (print_iterations) {
         printf("\nИтерации интегрирования:\n");
