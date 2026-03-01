@@ -57,3 +57,4 @@ dkms.conf
 # Мои файлы
 build/
 .vscode/
+docs/
